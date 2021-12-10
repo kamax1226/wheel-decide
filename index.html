@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Simple Wheel Decide demo for Jesus">
+  <meta name="author" content="Andrei">
+  <title>Wheel Decide Demo - Moonshot</title>
+  
+  <script src="./assets/js/Winwheel.js"></script>
+  <!-- Bootstrap core CSS -->
+  <link href="./assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom fonts for this template -->
+  <link href="./assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+  <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+  <!-- Custom styles for this template -->
+  <link href="./assets/css/agency.min.css" rel="stylesheet">
+  <link href="./assets/css/custom.css" rel="stylesheet">
+</head>
+
+<!-- <style media="screen">
+
+</style> -->
+
+<body id="page-top">
+  <div class="modal1" id="modal1">
+    <div class="modal-header1">
+      <div class="title">PRIVACY POLICY</div>
+      <button data-close-button class="close-button1">&times;</button>
+    </div>
+    <div class="modal-body1">
+      We use Facebook login to identify users and correlate them to their saved wheels and to display the user’s name to the user so that they know that they are logged in. We do not use any other information from Facebook. We use google analytics on all pages, so wheel choices that are created with the individual choice entry method will be visible to Google and to the administrators of the website.
+    </div>
+  </div>
+  <div id="overlay1"></div>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Moonshot</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="masthead">
+    <div class="black">
+      <div class="container">
+        <div class="intro-text">
+          <div class="intro-lead-in">Welcome To Moonshot!</div>
+        </div>
+
+        <div id="canvasContainer">
+          <div class="pc">
+            <img id="prizePointer" src="./assets/img/piece.png" height="60" width="" alt="V"/>
+          </div>
+          <canvas id='canvas' width='400' height='400' data-responsiveMinWidth="180" data-responsiveScaleHeight="true" data-responsiveMargin="50">
+            Canvas not supported, use another browser.
+          </canvas>
+        </div>
+
+        <div style="text-align:center;">
+          <input class="form-control rf rm" type="text" name="element" id="element" style="display:none;">
+          <button class="btn btn-primary btn-xl js-scrol-trigger rm" id="addButton" onClick="show1(); addSegment(document.getElementById('element').value); " style="display:none;">Add Segment</button>
+          <button class="btn btn-primary btn-xl js-scrol-trigger rm" id="bigButton" class="bigButton" style="display:none;" onclick="show3();">Save Changes</button>
+          <a style="color:white; visibility: hidden;" class="rm" href="javascript:void(0);" id="reset1" onclick="theWheel.stopAnimation(false); theWheel.rotationAngle=0; theWheel.draw();">Reset</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <span class="copyright">Copyright &copy; Andrei Strukau 2021</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="./assets/vendor/jquery/jquery.min.js"></script>
+  <script src="./assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Plugin JavaScript -->
+  <script src="./assets/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Contact form JavaScript -->
+  <script src="./assets/js/jqBootstrapValidation.js"></script>
+
+  <!-- Custom scripts for this template -->
+  <script src="./assets/js/agency.min.js"></script>
+
+  <script type="text/javascript">
+    const openModalButtons = document.querySelectorAll('[data-modal-target]')
+    const closeModalButtons = document.querySelectorAll('[data-close-button]')
+    const overlay = document.getElementById('overlay1')
+
+    openModalButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const modal = document.querySelector(button.dataset.modalTarget)
+        openModal(modal)
+      })
+    })
+
+    overlay.addEventListener('click', () => {
+      const modals = document.querySelectorAll('.modal1.active')
+      modals.forEach(modal => {
+        closeModal(modal)
+      })
+    })
+
+    closeModalButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const modal = button.closest('.modal1')
+        closeModal(modal)
+      })
+    })
+
+    function openModal(modal) {
+      if (modal == null) return
+      modal.classList.add('active')
+      overlay.classList.add('active')
+    }
+
+    function closeModal(modal) {
+      if (modal == null) return
+      modal.classList.remove('active')
+      overlay.classList.remove('active')
+    }
+  </script>
+  
+  <script>
+    document.getElementById("reset1").style.display = "none";
+    document.getElementById("reset1").style.display = "block";
+    var colors=['#fed136','#5BBF42','#41CEDB','#e7706f','#8787F2','#4381C1','#BEA2C2','#A37871','#4E4B5C','#DD1313','orange','yellow','green','blue','indigo','violet'];
+    let theWheel = new Winwheel({
+      'numSegments': 7,
+      'lineWidth': 4,
+      'textFillStyle': '#ffffff',
+      'textFontFamily': 'Roboto Slab',
+      'textFontSize': 14,
+      'strokeStyle': '#ffffff',
+      'innerRadius': 35,
+      'segments': [
+        {'fillStyle' : 'violet', 'text' : 'Engineer'},
+        {'fillStyle' : 'indigo', 'text' : 'Architect'},
+        {'fillStyle' : 'blue', 'text' : 'Designer'},
+        {'fillStyle' : 'green', 'text' : 'Guitar Teacher'},
+        {'fillStyle' : 'black', 'text' : 'Piano Teacher'},
+        {'fillStyle' : 'orange', 'text' : 'Vocal Teacher'},
+        {'fillStyle' : 'red', 'text' : 'Amazon Seller'}
+      ],
+      'outerRadius'    : 170,
+      'responsive'   : true,
+      'animation' : {
+        'type'     : 'spinToStop',
+        'duration' : 5,
+        'spins'    : 8,
+        'callbackSound': playSound,
+
+        // Remember to do something after the animation has finished specify callback function.
+        'callbackFinished' : 'alertPrize()',
+
+        // // During the animation need to call the drawTriangle() to re-draw the pointer each frame.
+        // 'callbackAfter' : 'drawTriangle()'
+      },
+      'flag':0,
+    });
+
+    let audio = new Audio('./assets/audio/tick.mp3');
+
+    function playSound() {
+      // Stop and rewind the sound (stops it if already playing).
+      audio.pause();
+      audio.currentTime = 0;
+
+      // Play the sound.
+      audio.play();
+    }
+
+    canvas.onclick = function (e) {
+      if (theWheel.flag===0) {
+        theWheel.startAnimation();
+      }
+
+      if (theWheel.flag===1) {
+        // Call the getSegmentAt function passing the mouse x and y from the event.
+
+        let segmentNumber = theWheel.getSegmentNumberAt(e.clientX, e.clientY);
+
+        // A pointer to the segment clicked is returned if the user clicked inside the wheel.
+        if (segmentNumber) {
+          // Change background colour of the segment and update the wheel.
+          deleteSegment(segmentNumber);
+        }
+      }
+    }
+
+    // This function called after the spin animation has stopped.
+    function alertPrize() {
+      // Call getIndicatedSegment() function to return pointer to the segment pointed to on wheel.
+      let winningSegment = theWheel.getIndicatedSegment();
+
+      // Basic alert of the segment text which is the prize name.
+      alert("You hired " + winningSegment.text + "!");
+      document.getElementById("reset1").click();
+    }
+  
+    function addSegment(element) {
+      // Use a date object to set the text of each added segment to the current minutes:seconds
+      // (just to give each new segment a different label).
+      // The Second parameter in the call to addSegment specifies the position,
+      // in this case 1 meaning the new segment goes at the start of the wheel.
+      theWheel.addSegment({
+        'text' : element,
+        'fillStyle' : colors[Math.floor(Math.random() * 16)],
+      }, 1);
+      // The draw method of the wheel object must be called in order for the changes
+      // to be rendered.
+      document.getElementById("wc1").style.display = "none";
+      document.getElementById("wc2").style.display = "block";
+      theWheel.draw();
+      document.getElementById("element").value=null;
+    }
+    
+    function deleteSegment(segmentNumber) {
+      // Call function to remove a segment from the wheel, by default the last one will be
+      // removed; you can pass in the number of the segment to delete if desired.
+
+      if (theWheel.numSegments >= 2) {
+        theWheel.deleteSegment(segmentNumber)
+        theWheel.draw();
+      } else {
+        document.getElementById("wc1").style.display = "block";
+        document.getElementById("wc2").style.display = "none";
+        document.getElementById("canvasContainer").style.display = "none";
+        theWheel.numSegments=0;
+      }
+      
+      // The draw method of the wheel object must be called to render the changes.
+    }
+
+    function show1() {
+      document.getElementById("canvasContainer").style.display = "block";
+    }
+
+    function show2() {
+      document.getElementById("element").style.display = "block";
+      document.getElementById("addButton").style.display = "block";
+      document.getElementById("canvasContainer").style.display = "block";
+      document.getElementById("reset1").style.display = "none";
+      document.getElementById("modi1").style.display = "none";
+      document.getElementById("bigButton").style.display = "block";
+      document.getElementById("element").style.marginLeft = "auto";
+      document.getElementById("addButton").style.marginLeft = "auto";
+      document.getElementById("bigButton").style.marginLeft = "auto";
+      document.getElementById("element").style.marginRight = "auto";
+      document.getElementById("addButton").style.marginRight = "auto";
+      document.getElementById("notice").style.display = "block";
+      document.getElementById("notice1").style.display = "none";
+      document.getElementById("bigButton").style.marginRight = "auto";
+
+      theWheel.draw();
+      // theWheel.numSegments=0;
+      theWheel.flag=1;
+    }
+
+    function show3() {
+      document.getElementById("modi1").style.display = "block";
+      document.getElementById("reset1").style.display = "block";
+      document.getElementById("addButton").style.display = "none";
+      document.getElementById("bigButton").style.display = "none";
+      document.getElementById("element").style.display = "none";
+      document.getElementById("modi1").style.marginLeft = "auto";
+      document.getElementById("modi1").style.marginRight = "auto";
+      document.getElementById("notice1").style.display = "block";
+      document.getElementById("notice").style.display = "none";
+
+      theWheel.flag=0;
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+</body>
+</html>
